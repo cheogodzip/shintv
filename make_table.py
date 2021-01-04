@@ -7,6 +7,7 @@ from pandas import DataFrame
 def findtoon(today):
     timetable_df = DataFrame(columns=['title'], index=range(0))
     # tooni_url 뒤에 날짜 문자열을 붙여야됨 형식: YYYYMMDD
+    today = datetime.strftime(today, "%Y%m%d")
     tooni_url = "http://tooniverse.tving.com/tooniverse/schedule?startDate="+today
     htmlcode = urllib.request.urlopen(tooni_url).read()
     soup = BeautifulSoup(htmlcode, "html.parser")
@@ -35,10 +36,9 @@ def findtoon(today):
     # 어떤 글자들 때문에 에러 발생
 
 def findanibox(today):
-    year = today[:4]
-    month = today[4:6]
-    day = today[6:8]
-    anibox_url = "http://aniboxtv.com/schedule/day.php?prev=" + year + "-" + month + "-" + day
+    # 1월 4일 애니박스 사이트가 막혀 있음
+    today = datetime.strftime(today, "%Y-%m-%d")
+    anibox_url = "http://aniboxtv.com/schedule/day.php?prev=" + today
     htmlcode = urllib.request.urlopen(anibox_url).read()
     soup = BeautifulSoup(htmlcode, "html.parser")
 
@@ -57,8 +57,7 @@ print("7일치 가져오기")
 oneday = timedelta(days = 1)
 today = datetime.today()
 for i in range(7):
-    today_edit = str(today.year) + (('0'+str(today.month)) if len(str(today.month))==1 else str(today.month)) + (('0'+str(today.day)) if len(str(today.day))==1 else str(today.day))
-    print(today_edit)
-    findtoon(today_edit)
-    findanibox(today_edit)
+    findtoon(today)
+    # 1월 4일 애니박스 사이트가 막혀 있음
+    # findanibox(today)
     today = today + oneday
